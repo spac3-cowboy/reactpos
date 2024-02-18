@@ -16,6 +16,7 @@ import TableComponent from "../CommonUi/TableComponent";
 import SaleReportPrint from "../Invoice/SaleReport";
 import UserPrivateComponent from "../PrivacyComponent/UserPrivateComponent";
 import AddSale from "./addSale";
+import DeleteBtn from "../Buttons/DeleteBtn";
 
 const GetAllSale = () => {
   const dispatch = useDispatch();
@@ -121,9 +122,11 @@ const GetAllSale = () => {
               Payment
             </button>
           </Link>
+          <DeleteBtn />
         </div>
       ),
     },
+    
   ];
 
   useEffect(() => {
@@ -183,7 +186,7 @@ const GetAllSale = () => {
                 onFinishFailed={() => setLoading(false)}
               >
                 <Form.Item name='user'>
-                  {/* <Select
+                  <Select
                     className='salelist-saleperson-input'
                     loading={!userList}
                     placeholder='Sale Person'
@@ -197,20 +200,20 @@ const GetAllSale = () => {
                           {i.username}
                         </Select.Option>
                       ))}
-                  </Select> */}
+                  </Select>
                 </Form.Item>
                 <div className=' mr-2'>
-                  {/* <RangePicker
+                  <RangePicker
                     onCalendarChange={onCalendarChange}
                     defaultValue={[
                       dayjs(startdate, "YYYY-MM-DD"),
                       dayjs(enddate, "YYYY-MM-DD"),
                     ]}
                     className='range-picker'
-                  /> */}
+                  />
                 </div>
 
-                {/* <Form.Item>
+                <Form.Item>
                   <Button
                     onClick={() => setLoading(true)}
                     loading={loading}
@@ -220,7 +223,7 @@ const GetAllSale = () => {
                   >
                     <SearchOutlined />
                   </Button>
-                </Form.Item> */}
+                </Form.Item>
               </Form>
             </div>
           </div>
@@ -237,17 +240,17 @@ const GetAllSale = () => {
           >
             <div className='md:flex items-center justify-center pb-3'>
               <div className='flex justify-between md:justify-start gap-1 md:gap-3 items-center'>
-                {/* <StatusSelection
+                <StatusSelection
                   paginatedThunk={loadAllSale}
                   query={{ user, startdate, enddate }}
-                /> */}
+                />
                 <div className='xxs:w-1/2 md:w-full xxs:flex-col md:flex-row  flex xxs:gap-1 md:gap-5'>
-                  {/* <SaleReportPrint
+                  <SaleReportPrint
                     data={list}
                     date={{ startdate, enddate }}
                     user={user}
                     total={total?._sum}
-                  /> */}
+                  />
                   <CreateDrawer
                     permission={"create-saleInvoice"}
                     title={"Add Sale"}
@@ -260,7 +263,7 @@ const GetAllSale = () => {
               </div>
             </div>
             <UserPrivateComponent permission={"readAll-saleInvoice"}>
-              {/* <TableComponent
+              <TableComponent
                 list={list}
                 columns={columns}
                 loading={saleLoading}
@@ -268,7 +271,7 @@ const GetAllSale = () => {
                 paginatedThunk={loadAllSale}
                 csvFileName={"all sale"}
                 query={{ startdate, enddate }}
-              /> */}
+              />
             </UserPrivateComponent>
           </Card>
         </div>
