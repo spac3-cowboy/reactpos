@@ -1,0 +1,3445 @@
+openapi: 3.0.0
+info:
+  title: Sale Flow
+  version: 1.0.0
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+security:
+  - bearerAuth: []
+tags:
+  - name: user
+  - name: inventory
+  - name: inventory > product
+  - name: inventory > productCategory
+  - name: inventory > productSubCategory
+  - name: inventory > productBrand
+  - name: inventory > adjustInventory
+  - name: inventory > productColor
+  - name: purchase
+  - name: purchase > supplier
+  - name: purchase > purchase invoice
+  - name: purchase > return purchase invoice
+  - name: purchase > payment purchase invoice
+  - name: sale
+  - name: sale > customer
+  - name: sale > sale invoice
+  - name: sale > return sale invoice
+  - name: sale > payment sale invoice
+  - name: accounting
+  - name: accounting > account
+  - name: accounting > transaction
+  - name: hr
+  - name: hr > role
+  - name: hr > permission
+  - name: hr > role permission
+  - name: hr > designation
+  - name: dashboard
+  - name: setting
+  - name: Email
+  - name: productVat
+paths:
+
+  /user/register:
+    post:
+      tags:
+        - user
+      summary: register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                username: user2
+                password: user2
+                roleId: 2
+                email: user2@grnai.com
+                salary: '150'
+                joinDate: 2020-03-19T14:21:00+0200
+                idNo: OEr34-000
+                designationId: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+  /user/login:
+    post:
+      tags:
+        - user
+      summary: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                username: admin
+                password: admin
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '401':
+          description: unauthorized!
+          content:
+            application/json: {}
+  /user:
+    get:
+      tags:
+        - user
+      summary: get all user by all or by paginated and by status query 
+      description: get all the product using bellow this <br>
+        1. query=all <br>
+        2. status=true,page=1,count=20 <br> 
+        3. status=false<br>
+      parameters:
+        - name: query
+          in: query
+          schema:
+            type: string
+            enum: ['all']
+            example: all
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: ['true', 'false']
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: count
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+  /user/{id}:
+    get:
+      tags:
+        - user
+      summary: get a single user
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '401':
+          description: unauthorized!
+          content:
+            application/json: {}
+        '404':
+          description: Not Found!
+          content:
+            application/json: {}
+    put:
+      tags:
+        - user
+      summary: update a single user
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                leaveDate: 2020-06-19T14:21:00+0200
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '401':
+          description: unauthorized!
+          content:
+            application/json: {}
+        '404':
+          description: Not Found!
+          content:
+            application/json: {}
+    patch:
+      tags:
+        - user
+      summary: change status of a user
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                status: 'false'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '401':
+          description: unauthorized!
+          content:
+            application/json: {}
+        '404':
+          description: Not Found!
+          content:
+            application/json: {}
+
+  /product?query=deletemany:
+     post:
+      tags:
+        - inventory > product
+      summary: delete many product
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                - 1
+                - 3
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+  /product?query=createmany:
+     post:
+      tags:
+        - inventory > product
+      summary: create many product
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                - name: product2
+                  sku: as1dq
+                  description: new product
+                  productSubCategoryId: 1
+                  productBrandId: 1
+                  productQuantity: 200
+                  productPurchasePrice: 1.5
+                  productSalePrice: 3.18
+                  unitType: pc
+                  status: 'true'
+                - name: product3
+                  sku: 4#&54q
+                  description: new product
+                  productSubCategoryId: 1
+                  productBrandId: 1
+                  productQuantity: 200
+                  productPurchasePrice: 1.5
+                  productSalePrice: 3.5
+                  unitType: pc
+                  status: 'true'
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+  /product:
+    post:
+      tags:
+        - inventory > product
+      summary: create a single product
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: samsung s44
+                productSubCategoryId:
+                  type: integer
+                  example: '1'
+                productBrandId:
+                  type: integer
+                  example: '1'
+                description:
+                  type: string
+                  example: <h1>new launched</h1>
+                sku:
+                  type: string
+                  example: h56h00
+                unitType:
+                  type: string
+                  example: pc
+                colors:
+                  type: string
+                  example: 2,3
+                images[]:
+                  type: string
+                  format: binary
+                unitMeasurement:
+                  type: integer
+                  example: '1'
+                reorderQuantity:
+                  type: integer
+                  example: '50'
+                productQuantity:
+                  type: integer
+                  example: '100'
+                productPurchasePrice:
+                  type: integer
+                  example: '20000'
+                productSalePrice:
+                  type: integer
+                  example: '35000'
+                productVat:
+                  type: integer
+                  example: '5'
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+    get:
+      tags:
+        - inventory > product
+      summary: get all product by all or by paginated and by status query  or search by key
+      description: get all the product using bellow this <br>
+        1. query=all <br> 
+        2. status=true,page=1,count=20 <br> 
+        3. status=false,page=1,count=10 <br>
+        4. query=search,key=samsung <br>
+        5. query=info
+      parameters:
+        - name: query
+          in: query
+          schema:
+            type: string
+            enum: ['all','search', 'info']
+            example: all
+        - name: key
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: ['true', 'false']
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: count
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+  /product/{id}:
+    get:
+      tags:
+        - inventory > product
+      summary: get a single product
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '404':
+          description: Not Found!
+          content:
+            application/json: {}
+    put:
+      tags:
+        - inventory > product
+      summary: update a single product
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: product updated
+                productSubCategoryId:
+                  type: integer
+                  example: '1'
+                productBrandId:
+                  type: integer
+                  example: '1'
+                description:
+                  type: string
+                  example: <h1>new product description updated</h1>
+                sku:
+                  type: string
+                  example: h56h5t
+                unitType:
+                  type: string
+                  example: kg
+                colors:
+                  type: string
+                  example: 2,3,4
+                images[]:
+                  type: string
+                  format: binary
+                unitMeasurement:
+                  type: integer
+                  example: '100'
+                reorderQuantity:
+                  type: integer
+                  example: '50'
+                productQuantity:
+                  type: integer
+                  example: '100'
+                productPurchasePrice:
+                  type: integer
+                  example: '200'
+                productSalePrice:
+                  type: integer
+                  example: '400'
+                productVat:
+                  type: integer
+                  example: '5'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '404':
+          description: Not Found!
+          content:
+            application/json: {}
+    patch:
+      tags:
+        - inventory > product
+      summary: delete a product
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                status: 'false'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '404':
+          description: Not Found!
+          content:
+            application/json: {}
+    
+  /product-category?query=deletemany:
+    post:
+      tags:
+        - inventory > productCategory
+      summary: delete many productCategory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                - 5
+                - 6
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+  /product-category?query=createmany:
+    post:
+      tags:
+        - inventory > productCategory
+      summary: create many productCategory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                - name: category 13
+                - name: category 14
+                - name: category 15
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+  /product-category:
+    post:
+      tags:
+        - inventory > productCategory
+      summary: create a single productCategory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: category 13
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+    get:
+      tags:
+        - inventory > productCategory
+      summary: get all productCategory by all or by paginated and by status query
+      description: get all the productCategory using bellow this <br>
+        1. query=all <br> 
+        2. status=true,page=1,count=20 <br> 
+        3. status=false,page=1,count=10 <br>
+        4. query=info
+      parameters:
+        - name: query
+          in: query
+          schema:
+            type: string
+            enum: ['all', 'info']
+            example: all
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: ['true', 'false']
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: count
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+  /product-category/{id}:
+    get:
+      tags:
+        - inventory > productCategory
+      summary: get a single productCategory
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+    put:
+      tags:
+        - inventory > productCategory
+      summary: update a single productCategory
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: category updated
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '404':
+          description: Not Found!
+          content:
+            application/json: {}
+    patch:
+      tags:
+        - inventory > productCategory
+      summary: delete a single productCategory
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                status: 'false'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '404':
+          description: Not Found!
+          content:
+            application/json: {}
+  
+  /product-sub-category?query=deletemany:
+    post:
+      tags:
+        - inventory > productSubCategory
+      summary: delete many productSubCategory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                - 10
+                - 11
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+  /product-sub-category?query=createmany:
+    post:
+      tags:
+        - inventory > productSubCategory
+      summary: create many productSubCategory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                - name: sub category 1
+                  productCategoryId: 1
+                - name: sub category 2
+                  productCategoryId: 1
+                - name: sub category 3
+                  productCategoryId: 1
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+  /product-sub-category:
+    post:
+      tags:
+        - inventory > productSubCategory
+      summary: create a single productSubCategory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: sub category single
+                productCategoryId: 1
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+    get:
+      tags:
+        - inventory > productSubCategory
+      summary: get all productSubCategory by all or by paginated and by status query
+      description: get all the productSubCategory using bellow this <br>
+        1. query=all <br> 
+        2. status=true,page=1,count=20 <br> 
+        3. status=false,page=1,count=10 <br>
+        4. query=info
+      parameters:
+        - name: query
+          in: query
+          schema:
+            type: string
+            enum: ['all', 'info']
+            example: all
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: ['true', 'false']
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: count
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+  /product-sub-category/{id}:
+    get:
+      tags:
+        - inventory > productSubCategory
+      summary: get a single productSubCategory
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+    put:
+      tags:
+        - inventory > productSubCategory
+      summary: update a single productSubCategory
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: sub cate updated
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '404':
+          description: Not Found!
+          content:
+            application/json: {}
+    patch:
+      tags:
+        - inventory > productSubCategory
+      summary: delete a single productSubCategory
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                status: 'false'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '404':
+          description: Not Found!
+          content:
+            application/json: {}
+
+  /product-brand?query=createmany:
+    post:
+      tags:
+        - inventory > productBrand
+      summary: create many productBrand
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                - name: Rich Man
+                - name: Blue Dream
+                - name: Easy
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+  /product-brand:
+    post:
+      tags:
+        - inventory > productBrand
+      summary: create a single productBrand
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: Rich Man
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+    get:
+      tags:
+        - inventory > productBrand
+      summary: get all productBrand by all or by paginated and by status query  or search by key
+      description: get all the productBrand using bellow this <br>
+        1. query=all <br> 
+        2. status=true,page=1,count=20 <br> 
+        3. status=false,page=1,count=10 <br>
+        4. query=search,key=samsung <br>
+      parameters:
+        - name: query
+          in: query
+          schema:
+            type: string
+            enum: ['all','search']
+            example: all
+        - name: key
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: ['true', 'false']
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: count
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+  /product-brand/{id}:
+    get:
+      tags:
+        - inventory > productBrand
+      summary: get a single productBrand
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+    put:
+      tags:
+        - inventory > productBrand
+      summary: update a single productBrand
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: Rich Man2
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '404':
+          description: Not Found!
+          content:
+            application/json: {}
+    patch:
+      tags:
+        - inventory > productBrand
+      summary: delete a single productBrand
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                status: 'false'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '404':
+          description: Not Found!
+          content:
+            application/json: {}
+
+  /adjust-inventory:
+    post:
+      tags:
+        - inventory > adjustInventory
+      summary: create adjustInventory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                date: '2023-08-12T11:01:14.870Z'
+                adjustType: set
+                note: ''
+                adjustInvoiceProduct:
+                  - productId: 1
+                    productQuantity: 500
+                  - productId: 2
+                    productQuantity: 600
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+
+  /product-color?query=createmany:
+    post:
+      tags:
+        - inventory > productColor
+      summary: create many productColor
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                - name: test1
+                  colorCode: test1
+                - name: test2
+                  colorCode: test2
+                - name: test3
+                  colorCode: test3
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+  /product-color:
+    post:
+      tags:
+        - inventory > productColor
+      summary: create a single productColor
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: test1
+                colorCode: test1
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+    get:
+      tags:
+        - inventory > productColor
+      summary: get all productColor by all or by paginated and by status query
+      description: get all the productColor using bellow this <br>
+        1. query=all <br> 
+        2. status=true,page=1,count=20 <br> 
+        3. status=false,page=1,count=10 <br>
+        4. query=info
+      parameters:
+        - name: query
+          in: query
+          schema:
+            type: string
+            enum: ['all', 'info']
+            example: all
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: ['true', 'false']
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: count
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+  /product-color/{id}:
+    get:
+      tags:
+        - inventory > productColor
+      summary: get a single productColor
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+    put:
+      tags:
+        - inventory > productColor
+      summary: update a single productColor
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: single color updated
+                colorCode: '#000f244'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '404':
+          description: Not Found!
+          content:
+            application/json: {}
+    patch:
+      tags:
+        - inventory > productColor
+      summary: delete a single productColor
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                status: 'false'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '404':
+          description: Not Found!
+          content:
+            application/json: {}
+  
+  /supplier?query=createmany:
+    post:
+      tags:
+        - purchase > supplier
+      summary: create many supplier
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                - name: supplier 1
+                  phone: '01788888084'
+                  address: everywhere
+                - name: supplier 2
+                  phone: '0178888885'
+                  address: everywhere
+                - name: supplier 3
+                  phone: '0178888886'
+                  address: everywhere
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+  /supplier:
+    post:
+      tags:
+        - purchase > supplier
+      summary: create a single supplier
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: supplier 1
+                phone: '01788888084'
+                address: everywhere
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+    get:
+      tags:
+        - purchase > supplier
+      summary: get all supplier by all or by paginated and by status query
+      description: get all the supplier using bellow this <br>
+        1. query=all <br> 
+        2. status=true,page=1,count=20 <br> 
+        3. status=false,page=1,count=10 <br>
+        4. query=info
+      parameters:
+        - name: query
+          in: query
+          schema:
+            type: string
+            enum: ['all', 'info']
+            example: all
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: ['true', 'false']
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: count
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+  /supplier/{id}:
+    get:
+      tags:
+        - purchase > supplier
+      summary: get a single supplier
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+    put:
+      tags:
+        - purchase > supplier
+      summary: update a single supplier
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: up up
+                phone: easy
+                address: everywhere
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '404':
+          description: Not Found!
+          content:
+            application/json: {}
+    patch:
+      tags:
+        - purchase > supplier
+      summary: change status of supplier
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                status: 'false'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '404':
+          description: Not Found!
+          content:
+            application/json: {}
+
+  /purchase-invoice:
+    post:
+      tags:
+        - purchase > purchase invoice
+      summary: create a new purchaseInvoice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                date: '2023-08-12T11:01:14.870Z'
+                paidAmount: 400
+                discount: 0
+                supplierId: 1
+                note: New note added
+                supplierMemoNo: A2012
+                purchaseInvoiceProduct:
+                  - productId: 1
+                    productQuantity: 10
+                    productPurchasePrice: 100
+                    productSalePrice: 200
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+    get:
+      tags:
+        - purchase > purchase invoice
+      summary: get all purchaseInvoice by paginated and by status query or search by key
+      description: get all the purchaseInvoice using bellow this <br>
+        1. page=1,count=20,startdate=2023-01-21,enddate=2023-12-30 <br> 
+        2. query=search,purchase=1 <br>
+        3. query=info,startdate=2022-01-01,enddate=2023-12-30
+      parameters:
+        - name: query
+          in: query
+          schema:
+            type: string
+            enum: ['search', 'info']
+        - name: purchase
+          in: query
+          schema:
+            type: integer
+        - name: startdate
+          in: query
+          schema:
+            type: date
+        - name: enddate
+          in: query
+          schema:
+            type: date
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: count
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+  /purchase-invoice/{id}:
+    get:
+      tags:
+        - purchase > purchase invoice
+      summary: get a single purchaseInvoice
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+
+  /return-purchase-invoice:
+    post:
+      tags:
+        - purchase > return purchase invoice
+      summary: create a new returnPurchaseInvoice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                date: '2023-01-02T11:01:14.870Z'
+                purchaseInvoiceId: 1
+                note: return added
+                returnPurchaseInvoiceProduct:
+                  - productId: 1
+                    productQuantity: 6
+                    productPurchasePrice: 100
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+    get:
+      tags:
+        - purchase > return purchase invoice
+      summary: get all returnPurchaseInvoice by paginated and by status query
+      description: get all the returnPurchaseInvoice using bellow this <br>
+        1. status=true,page=1,count=20,startdate=2023-01-21,enddate=2023-12-30 <br> 
+        2. query=info <br>
+        3. query=group <br>
+        4. query=all
+      parameters:
+        - name: query
+          in: query
+          schema:
+            type: string
+            enum: ['all', 'info', 'group']
+            example: all
+        - name: startdate
+          in: query
+          schema:
+            type: date
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: ['true', 'false']
+        - name: enddate
+          in: query
+          schema:
+            type: date
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: count
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+  /return-purchase-invoice/{id}:
+    get:
+      tags:
+        - purchase > return purchase invoice
+      summary: get a single returnPurchaseInvoice
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+    patch:
+      tags:
+        - purchase > return purchase invoice
+      summary: delete a single returnPurchaseInvoice
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                status: 'false'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '404':
+          description: Not Found!
+          content:
+            application/json: {}
+
+  /payment-purchase-invoice:
+    post:
+      tags:
+        - purchase > payment purchase invoice
+      summary: create a new paymentPurchaseInvoice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                date: '2023-04-10T12:25:41.137Z'
+                amount: 9600
+                discount: 0
+                purchaseInvoiceNo: 2
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+    get:
+      tags:
+        - purchase > payment purchase invoice
+      summary: get all paymentPurchaseInvoice by all or by paginated
+      description: get all the paymentPurchaseInvoice using bellow this example <br>
+        1. query=all <br> 
+        2. page=1,count=20 <br> 
+        3. query=info
+      parameters:
+        - name: query
+          in: query
+          schema:
+            type: string
+            enum: ['all', 'info']
+            example: all
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: count
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+  
+  /customer/login:
+    post:
+      tags:
+        - sale > customer
+      summary: customer login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                email: test@gmail.com
+                password: '12345678'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '401':
+          description: unauthorized!
+          content:
+            application/json: {}
+  /customer/reset-password/{id}:
+    patch:
+      tags:
+        - sale > customer
+      summary: reset password of customer
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                old_password: 12345678
+                password: 123456
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '401':
+          description: unauthorized!
+          content:
+            application/json: {}
+        '404':
+          description: Not Found!
+          content:
+            application/json: {}
+  /customer?query=deletemany:
+    post:
+      tags:
+        - sale > customer
+      summary: delete many customer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                - 5
+                - 7
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+  /customer?query=createmany:
+    post:
+      tags:
+        - sale > customer
+      summary: create many customer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                - name: customer 13
+                  email: customer13@gmail.com
+                  phone: 01708888842
+                  address: everywhere
+                - name: customer 14
+                  email: customer14@gmail.com
+                  phone: 01708880042
+                  address: everywhere
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '404':
+          description: Not Found!
+          content:
+            application/json: {}
+  /customer:
+    post:
+      tags:
+        - sale > customer
+      summary: create a single customer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: mukhter
+                email: mohammadmukhter72@gmail.com
+                phone: 01800000000
+                address: everywhere
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '404':
+          description: Not Found!
+          content:
+            application/json: {}
+    get:
+      tags:
+        - sale > customer
+      summary: get all customer by all or by paginated and by status query  or search by key
+      description: get all the customer using bellow this example<br>
+        1. query=all <br> 
+        2. status=true,page=1,count=20 <br> 
+        3. status=false,page=1,count=10 <br>
+        4. query=search,prod=do <br>
+        5. query=info,page=1,count=10
+      parameters:
+        - name: query
+          in: query
+          schema:
+            type: string
+            enum: ['all','search', 'info']
+            example: all
+        - name: prod
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: ['true', 'false']
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: count
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '400':
+          description: Invalid query!
+          content:
+            application/json: {}
+        '404':
+          description: Not Found!
+          content:
+            application/json: {}
+  /customer/{id}:
+    get:
+      tags:
+        - sale > customer
+      summary: get a single customer
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+    put:
+      tags:
+        - sale > customer
+      summary: update a single customer
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: customer updated
+                phone: '01200000000'
+                address: dhaka
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '404':
+          description: Not Found!
+          content:
+            application/json: {}
+    patch:
+      tags:
+        - sale > customer
+      summary: delete a single customer
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                status: 'false'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '404':
+          description: Not Found!
+          content:
+            application/json: {}
+  
+  /sale-invoice:
+    post:
+      tags:
+        - sale > sale invoice
+      summary: create a new saleInvoice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                date: '2023-02-09T22:53:57+06:00'
+                paidAmount: 300
+                discount: 30
+                customerId: 1
+                userId: 1
+                address: Mirpur, Dhaka
+                orderStatus: success
+                note: sales note
+                vatId:
+                  - 1
+                saleInvoiceProduct:
+                  - productId: 1
+                    productQuantity: 2
+                    productSalePrice: 1000
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '400':
+          description: error
+          content:
+            application/json: {}
+    get:
+      tags:
+        - sale > sale invoice
+      summary: get all saleInvoice by all or by paginated and by status query or search by key
+      description: get all the saleInvoice using bellow this example<br>
+        1. query=all <br> 
+        2. status=true,page=1,count=20 <br> 
+        3. status=false,page=1,count=10 <br>
+        4. query=search,sale=1 <br>
+        5. query=info,startdate=2022-09-01,enddate=2023-2-30 <br>
+        6. page=1,count=20,startdate=2023-01-21,enddate=2023-12-30 <br> 
+      parameters:
+        - name: query
+          in: query
+          schema:
+            type: string
+            enum: ['search-order','search', 'info']
+            example: all
+        - name: sale
+          in: query
+          schema:
+            type: integer
+        - name: startdate
+          in: query
+          schema:
+            type: date
+        - name: enddate
+          in: query
+          schema:
+            type: date
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: ['pending']
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: count
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+  /sale-invoice/{id}:
+    get:
+      tags:
+        - sale > sale invoice
+      summary: get a single saleInvoice
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '400':
+          description: error!
+          content:
+            application/json: {}
+  /sale-invoice/order:
+    patch:
+      tags:
+        - sale > sale invoice
+      summary: update order status
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                invoiceId: 2
+                orderStatus: "pending"
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '404':
+          description: Not Found!
+          content:
+            application/json: {}
+  
+  /return-sale-invoice:
+    post:
+      tags:
+        - sale > return sale invoice
+      summary: create a new returnSaleInvoice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                date: '2022-12-15T04:15:24.880Z'
+                saleInvoiceId: 1
+                note: customer return added
+                returnSaleInvoiceProduct:
+                  - productId: 1
+                    productQuantity: 1
+                    productSalePrice: 1000
+                  - productId: 2
+                    productQuantity: 1
+                    productSalePrice: 1000
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+    get:
+      tags:
+        - sale > return sale invoice
+      summary: get all returnSaleInvoice by paginated and by status query
+      description: get all the returnSaleInvoice using bellow this <br>
+        1. status=true,page=1,count=20,startdate=2023-01-21,enddate=2023-12-30 <br> 
+        2. query=info <br>
+        3. query=group <br>
+        4. query=all
+      parameters:
+        - name: query
+          in: query
+          schema:
+            type: string
+            enum: ['all', 'info', 'group']
+            example: all
+        - name: startdate
+          in: query
+          schema:
+            type: date
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: ['true', 'false']
+        - name: enddate
+          in: query
+          schema:
+            type: date
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: count
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+  /return-sale-invoice/{id}:
+    get:
+      tags:
+        - sale > return sale invoice
+      summary: get a single returnSaleInvoice
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+    patch:
+      tags:
+        - sale > return sale invoice
+      summary: delete a single returnSaleInvoice
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                status: 'false'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '404':
+          description: Not Found!
+          content:
+            application/json: {}
+  
+  /payment-sale-invoice:
+    post:
+      tags:
+        - sale > payment sale invoice
+      summary: create a new paymentSaleInvoice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                date: '2023-08-14T12:25:41.137Z'
+                amount: 200
+                discount: 0
+                saleInvoiceNo: 3
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+    get:
+      tags:
+        - sale > payment sale invoice
+      summary: get all paymentSaleInvoice by all or by paginated
+      description: get all the paymentSaleInvoice using bellow this example <br>
+        1. query=all <br> 
+        2. page=1,count=20 <br> 
+        3. query=info
+      parameters:
+        - name: query
+          in: query
+          schema:
+            type: string
+            enum: ['all', 'info']
+            example: all
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: count
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+  
+  /account:
+    post:
+      tags:
+        - accounting > account
+      summary: create a new account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: Tax payable
+                accountId: 2
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+    get:
+      tags:
+        - accounting > account
+      summary: get all account by all or by paginated or by type query
+      description: get all the account using bellow this example<br>
+        1. type=sa,query=all <br> 
+        2. query=tb <br> 
+        3. query=bs <br> 
+        4. query=is <br> 
+        5. type=sa,status=true,page=1,count=20 <br> 
+        6. type=ma <br> 
+      parameters:
+        - name: query
+          in: query
+          schema:
+            type: string
+            enum: ['all', 'tb', 'bs', 'is']
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: ['sa', 'ma']
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: ['true', 'false']
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: count
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+  /account/{id}:
+    get:
+      tags:
+        - accounting > account
+      summary: get a single sub account
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+    put:
+      tags:
+        - accounting > account
+      summary: update a single account
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: Bank 2
+                accountId: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+    patch:
+      tags:
+        - accounting > account
+      summary: delete a single account
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                status: "false"
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+
+  /transaction:
+    post:
+      tags:
+        - accounting > transaction
+      summary: create a new transaction
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                date: '2022-09-09T04:15:24.880Z'
+                debitId: 16
+                creditId: 1
+                amount: 1000
+                particulars: vat pay
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+    get:
+      tags:
+        - accounting > transaction
+      summary: get all transaction by paginated and by status query or search
+      description: get all the transaction using bellow this example <br>
+        1. page=1,count=20,startdate=2023-01-21,enddate=2023-12-30 <br> 
+        2. query=inactive,page=1,count=20,startdate=2023-01-21,enddate=2023-12-30 <br> 
+        3. query=info <br>
+        4. query=all <br>
+        5. query=search,transaction=1 <br>
+      parameters:
+        - name: query
+          in: query
+          schema:
+            type: string
+            enum: ['all', 'info', 'inactive', 'active', 'search']
+            example: all
+        - name: startdate
+          in: query
+          schema:
+            type: date
+        - name: enddate
+          in: query
+          schema:
+            type: date
+        - name: transaction
+          in: query
+          schema:
+            type: integer
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: count
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+  /transaction/{id}:
+    get:
+      tags:
+        - accounting > transaction
+      summary: get a single transaction
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+    put:
+      tags:
+        - accounting > transaction
+      summary: update a single transaction
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                date: '2022-08-31T12:25:41.137Z'
+                voucher: ''
+                debitId: 1
+                creditId: 3
+                amount: 100
+                particulars: hello
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '404':
+          description: Not Found!
+          content:
+            application/json: {}
+    patch:
+      tags:
+        - accounting > transaction
+      summary: delete a single transaction
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                status: 'false'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '404':
+          description: Not Found!
+          content:
+            application/json: {}
+  
+  /role?query=deletemany:
+    post:
+      tags:
+        - hr > role
+      summary: delete many role
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                - 12
+                - 13
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+  /role?query=createmany:
+    post:
+      tags:
+        - hr > role
+      summary: delete many role
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                - name: employee
+                - name: HR
+                - name: Accountant
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+  /role:
+    post:
+      tags:
+        - hr > role
+      summary: create a single role
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: employee
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+    get:
+      tags:
+        - hr > role
+      summary: get all role by all or by paginated and by status query
+      description: get all the role using bellow this example <br>
+        1. query=all <br> 
+        2. status=true,page=1,count=20 <br> 
+        3. status=false,page=1,count=10 <br>
+      parameters:
+        - name: query
+          in: query
+          schema:
+            type: string
+            enum: ['all']
+            example: all
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: ['true', 'false']
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: count
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+  /role/{id}:
+    get:
+      tags:
+        - hr > role
+      summary: get a single role
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+    patch:
+      tags:
+        - hr > role
+      summary: change status of role
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                status: 'false'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '404':
+          description: Not Found!
+          content:
+            application/json: {}
+    put:
+      tags:
+        - hr > role
+      summary: update a single role
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: super admin updated
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '404':
+          description: Not Found!
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - hr > role
+      summary: delete a single role
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '404':
+          description: Not Found!
+          content:
+            application/json: {}
+  
+  /permission:
+    get:
+      tags:
+        - hr > permission
+      summary: get all role by all or by paginated
+      description: get all the role using bellow this example <br>
+        1. query=all <br> 
+        2. page=1,count=20 <br> 
+      parameters:
+        - name: query
+          in: query
+          schema:
+            type: string
+            enum: ['all']
+            example: all
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: count
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+
+  /role-permission?query=deletemany:
+    post:
+      tags:
+        - hr > role permission
+      summary: delete many rolePermission
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                - 81
+                - 83
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+  /role-permission:
+    post:
+      tags:
+        - hr > role permission
+      summary: create many
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                roleId: 2,
+                permissionId: 
+                  - 10
+                    20
+                    30
+                    40
+                    45
+                    6
+                    7
+                    8
+                    9
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json: {}  
+        '500':
+          description: Server Side error
+          content:
+            application/json: {} 
+  /role-permission/{id}:
+    delete:
+      tags:
+        - hr > role permission
+      summary: delete a single rolePermission
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '404':
+          description: Not Found!
+          content:
+            application/json: {}
+
+  /designation?query=deletemany:
+    post:
+      tags:
+        - hr > designation
+      summary: delete many designation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                - 3
+                - 4
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+  /designation?query=createmany:
+    post:
+      tags:
+        - hr > designation
+      summary: create many designation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                - name: des11
+                - name: des22
+                - name: des33
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+  /designation:
+    post:
+      tags:
+        - hr > designation
+      summary: create a single designation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: designation1
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+    get:
+      tags:
+        - hr > designation
+      summary: get all designation by all or by paginated and by status query
+      description: get all the designation using bellow this example <br>
+        1. query=all <br> 
+        2. status=true,page=1,count=20 <br> 
+        3. status=false,page=1,count=10 <br>
+        4. query=info <br>
+      parameters:
+        - name: query
+          in: query
+          schema:
+            type: string
+            enum: ['all','info']
+            example: all
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: ['true', 'false']
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: count
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '400':
+          description: Invalid query!
+          content:
+            application/json: {}
+  /designation/{id}:
+    get:
+      tags:
+        - hr > designation
+      summary: get a single designation
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '404':
+          description: Not Found!
+          content:
+            application/json: {}
+    put:
+      tags:
+        - hr > designation
+      summary: update a single designation
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: des 2 update
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '404':
+          description: Not Found!
+          content:
+            application/json: {}
+    patch:
+      tags:
+        - hr > designation
+      summary: delete a single designation
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                status: 'false'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '404':
+          description: Not Found!
+          content:
+            application/json: {}
+  
+  /dashboard:
+    get:
+      tags:
+        - dashboard
+      summary: get info by groupByDay
+      parameters:
+        - name: startdate
+          in: query
+          schema:
+            type: string
+            example: '2023-01-01'
+        - name: enddate
+          in: query
+          schema:
+            type: string
+            example: '2023-12-30'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+  
+  /email:
+    get:
+      tags:
+        - Email
+      summary: create email
+      parameters:
+        - name: type
+          in: query
+          schema:
+            type: string
+            example: saleinvoice
+        - name: userId
+          in: query
+          schema:
+            type: integer
+            example: '1'
+        - name: emailaddress
+          in: query
+          schema:
+            type: string
+            example: rshaon09@gmail.com
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+  
+  /setting:
+    put:
+      tags:
+        - setting
+      summary: update single
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                companyName: My Company
+                tagLine: My Tagline
+                address: My Address
+                phone: My Phone
+                email: My Email
+                website: My Website
+                footer: My Footer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+    get:
+      tags:
+        - setting
+      summary: get setting
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+  
+  /email/user-info/{id}:
+    get:
+      tags:
+        - Email
+      summary: send user info
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+  
+  /product-vat?query=createmany:
+    post:
+      tags:
+        - productVat
+      summary: create many productVat
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                - title: test1
+                  percentage: 5
+                - title: test2
+                  percentage: 5
+                - title: test3
+                  percentage: 5
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+  /product-vat:
+    post:
+      tags:
+        - productVat
+      summary: create a single productVat
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                title: test1
+                percentage: 5
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+    get:
+      tags:
+        - productVat
+      summary: get all productVat by all or by status query or by info
+      description: get all the productVat using bellow this example <br>
+        1. query=all <br> 
+        2. status=true <br> 
+        3. status=false <br>
+        4. query=info <br>
+      parameters:
+        - name: query
+          in: query
+          schema:
+            type: string
+            enum: ['all', 'info']
+            example: all
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: ['true', 'false']
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '400':
+          description: Invalid query
+          content:
+            application/json: {}
+  /product-vat/statement:
+    get:
+      tags:
+        - productVat
+      summary: product vat statement
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+  /product-vat/{id}:
+    put:
+      tags:
+        - productVat
+      summary: update productVat
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                title: test
+                percentage: 5
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '404':
+          description: Not Found!
+          content:
+            application/json: {}
+    patch:
+      tags:
+        - productVat
+      summary: delete a single productVat
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                status: 'false'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+          description: Server Side error
+          content:
+            application/json: {}
+        '404':
+          description: Not Found!
+          content:
+            application/json: {}
